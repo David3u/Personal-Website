@@ -1,0 +1,143 @@
+{
+  "hero": {
+    "name": "David Wu",
+    "title": "Computer Engineering",
+    "subtitle": "College student at The Cooper Union interested in building AI-powered applications with real-world impact. You can contact me at 3udavid@gmail.com",
+    "resumeButtonText": "Download Resume"
+  },
+  "experience": {
+    "title": "Experience",
+    "jobs": [
+      {
+        "company": "Distributed Artificial Intelligence Research (DAIR) Lab, Hunter College",
+        "title": "Research Assistant",
+        "period": "2024 - present",
+        "bullets": [
+          "Conducted research on multi-agent reasoning and collaboration with LLMs for abstract reasoning with resource limitations using Pytorch",
+          "Gained hands-on experience in collaborative AI research, integrating theoretical frameworks in distributed cognition and coordination with practical implementations for LLM-based agent systems",
+          "Co-authored and submitted a paper to AI conferences, contributing to experiment design, data analysis, and technical writing"
+        ]
+      },
+      {
+        "company": "Atommap Cooperation",
+        "title": "Software Engineering Intern",
+        "period": "2023 - 2025",
+        "bullets": [
+          "Gained industry-level software development experience, including maintaining code quality, version control, and deployment best practices",
+          "Developed and deployed two custom Slack bot applications, actively used across the company’s workspace to improve productivity by integrating with Zotero and Jiro workflows",
+          "Created and implemented custom command-line tools in Python to automate routine tasks using the OpenAI API, resulting in a 70% reduction in manual effort while creating pull requests"
+        ]
+      },
+      {
+        "company": "TeachShare (via Harvard Undergraduate Ventures TECH Summer Program)",
+        "title": "Software Engineering Intern",
+        "period": "2025",
+        "bullets": [
+          "Gained hands-on experience in the startup ecosystem through workshops and mentorship on product design, fundraising, and market validation",
+          "Interned at Teachshare, a company applying GenAI for education, improving the backend infrastructure and enhancing AI implementation for automated worksheet generation",
+          "Designed and integrated new features into the AI worksheet creation system, increasing customization options and content accuracy for educators"
+        ]
+      },
+      {
+        "company": "Freelance",
+        "title": "Private Chess and CS Tutor",
+        "period": "2023-2025",
+        "bullets": [
+          "Provided 1:1 chess tutoring for 7 different students, focusing on strategy development, gameplay analysis, and tournament preparation",
+          "Tutored 4 students in computer science, covering topics from foundational programming concepts to advanced competitive programming/algorithms techniques",
+          "Designed and taught a group computer science course for 30+ students, incorporating algorithms, coding challenges, and project-based learning to build practical skills"
+        ]
+      }
+    ]
+  },
+  "projects": {
+    "title": "Featured Projects",
+    "items": [
+      {
+        "title": "NYConductor",
+        "description": "A multilingual assistant for navigating the New York City transit system using natural language. This website gives an agent access to over 10 different endpoints, allowing it to answer any query about using the MTA.",
+        "image": "/projects/nyconductor.png",
+        "tags": ["Fullstack", "AI Agent", "MTA API"],
+        "link": "https://nyconductor.david3u.com",
+        "linkText": "Try it out"
+      },
+      {
+        "title": "Speechly",
+        "description": "AI powered speech analysis tool and coaching for better communication. This is a full SaaS suite of tools for improving speaking: structured AI speech analysis harness, curated resources, rich transcript annotation, personal coach with tools.",
+        "image": "/projects/speechly.png",
+        "tags": ["Fullstack", "AI Workflow", "Speech Processing", "SaaS"],
+        "link": "https://speechly.david3u.com",
+        "linkText": "Try it out"
+      },
+      {
+        "title": "SpeedReader",
+        "description": "ORP research based tool that helps you read fast while maintaining comprehension. Locally stored history with a clean UI and quality of life features.",
+        "image": "/projects/speedreader.png",
+        "tags": ["UI/UX", "Figma", "Frontend"],
+        "link": "https://speedreader.david3u.com",
+        "linkText": "Try it out"
+      },
+      {
+        "title": "GradePic",
+        "description": "Scans worksheets for student names and scores quickly and efficiently using the computer's camera, saving teachers from entering scores into spreadsheets.",
+        "image": "/projects/gradepic.png",
+        "tags": ["Full stack", "OCR", "Custom AI model"],
+        "link": "https://gradepic.david3u.com",
+        "linkText": "Try it out"
+      }
+    ]
+  },
+  "education": {
+    "title": "Education & Certifications",
+    "education": [
+      {
+        "degree": "High School Diploma",
+        "institution": "Hunter College High School",
+        "year": "2026",
+        "link": "https://hunterschools.org"
+      },
+      {
+        "degree": "Electrical Engineering Undergraduate Degree",
+        "institution": "The Cooper Union for the Advancement of Science and Art",
+        "year": "2026-2030",
+        "link": "https://cooper.edu"
+      }
+    ],
+    "certifications": [
+      {
+        "name": "HUVTSP-TECH Summer Internship Program",
+        "issuer": "Harvard Undergraduate Ventures",
+        "year": "2025",
+        "link": "https://tech.seas.harvard.edu/"
+      },
+      {
+        "name": "USACO Gold (top 7%)",
+        "issuer": "USA's premier competitive programming olympiad",
+        "year": "2024-2025",
+        "link": "https://usaco.org"
+      }
+    ]
+  },
+  "contact": {
+    "links": [
+      {
+        "type": "email",
+        "label": "Email",
+        "value": "3udavid@gmail.com",
+        "href": "mailto:3udavid@gmail.com"
+      },
+      {
+        "type": "linkedin",
+        "label": "LinkedIn",
+        "value": "/in/david3u",
+        "href": "https://linkedin.com/in/david3u/"
+      },
+      {
+        "type": "github",
+        "label": "GitHub",
+        "value": "/david3u",
+        "href": "https://github.com/david3u"
+      }
+    ]
+  }
+}
