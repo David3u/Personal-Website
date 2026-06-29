@@ -113,15 +113,8 @@ function normalizeUploadId(id: string) {
   return normalized;
 }
 
-function createUploadId(existingIds: Set<string>) {
-  for (let attempt = 0; attempt < 10; attempt += 1) {
-    const id = crypto.randomBytes(16).toString("hex");
-    if (!existingIds.has(id)) {
-      return id;
-    }
-  }
-
-  throw new Error("Unable to generate a unique upload ID.");
+function createUploadId() {
+  return crypto.randomBytes(16).toString("hex");
 }
 
 async function withManifestWriteLock<T>(task: () => Promise<T>) {
@@ -175,9 +168,10 @@ export async function createUpload(file: File, uploadedBy: string) {
     throw new Error("File exceeds the 100 MB limit.");
   }
 
-  return withManifestWriteLock(async () => {
-    const manifest = await readManifest();
-    const id = createUploadId(new Set(manifest.uploads.map((entry) => entry.id)));
+  await ensureUploadStore();
+
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    const id = createUploadId();
     const originalName = file.name?.trim() || "file";
     const storedName = `${id}--${sanitizeFileName(originalName)}`;
     const filePath = getUploadFilePath(storedName);
@@ -200,15 +194,30 @@ export async function createUpload(file: File, uploadedBy: string) {
     );
 
     try {
-      manifest.uploads.push(upload);
-      await writeManifest(manifest);
+      await withManifestWriteLock(async () => {
+        const manifest = await readManifest();
+
+        if (manifest.uploads.some((entry) => entry.id === id)) {
+          throw new Error("UPLOAD_ID_COLLISION");
+        }
+
+        manifest.uploads.push(upload);
+        await writeManifest(manifest);
+      });
     } catch (error) {
       await fs.rm(filePath, { force: true });
+
+      if (error instanceof Error && error.message === "UPLOAD_ID_COLLISION") {
+        continue;
+      }
+
       throw error;
     }
 
     return upload;
-  });
+  }
+
+  throw new Error("Unable to generate a unique upload ID.");
 }
 
 export async function deleteUpload(id: string) {

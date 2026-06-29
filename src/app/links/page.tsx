@@ -40,6 +40,15 @@ type ApiError = {
 
 type AdminTab = "downloads" | "links";
 type PreviewKind = "image" | "video" | "audio" | "pdf" | "text" | "none";
+type UploadNoticeStatus = "uploading" | "success" | "error";
+
+type UploadNotice = {
+  id: string;
+  fileName: string;
+  progress: number;
+  status: UploadNoticeStatus;
+  message: string;
+};
 
 function formatBytes(size: number) {
   if (!Number.isFinite(size) || size < 1024) {
@@ -142,11 +151,9 @@ export default function LinksAdminPage() {
   const [linkLoading, setLinkLoading] = useState(false);
 
   const [uploads, setUploads] = useState<UploadedFile[]>([]);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedFilePreviewUrl, setSelectedFilePreviewUrl] = useState<string | null>(
-    null,
-  );
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploadLoading, setUploadLoading] = useState(false);
+  const [uploadNotices, setUploadNotices] = useState<UploadNotice[]>([]);
   const [isDragging, setIsDragging] = useState(false);
 
   const [authLoading, setAuthLoading] = useState(false);
@@ -156,6 +163,7 @@ export default function LinksAdminPage() {
   const [editingTargetUrl, setEditingTargetUrl] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const uploadNoticeTimeoutsRef = useRef<Map<string, number>>(new Map());
 
   const baseUrl = useMemo(() => {
     if (typeof window === "undefined") {
@@ -172,20 +180,6 @@ export default function LinksAdminPage() {
       }),
     [],
   );
-
-  useEffect(() => {
-    if (!selectedFile) {
-      setSelectedFilePreviewUrl(null);
-      return;
-    }
-
-    const objectUrl = URL.createObjectURL(selectedFile);
-    setSelectedFilePreviewUrl(objectUrl);
-
-    return () => {
-      URL.revokeObjectURL(objectUrl);
-    };
-  }, [selectedFile]);
 
   async function readApiError(response: Response) {
     return (await response.json().catch(() => ({}))) as ApiError;
@@ -260,15 +254,96 @@ export default function LinksAdminPage() {
     void checkSession();
   }, [checkSession]);
 
-  function resetSelectedFile() {
-    setSelectedFile(null);
+  useEffect(() => {
+    const uploadNoticeTimeouts = uploadNoticeTimeoutsRef.current;
+
+    return () => {
+      for (const timeoutId of uploadNoticeTimeouts.values()) {
+        window.clearTimeout(timeoutId);
+      }
+      uploadNoticeTimeouts.clear();
+    };
+  }, []);
+
+  function clearUploadNoticeTimeout(noticeId: string) {
+    const timeoutId = uploadNoticeTimeoutsRef.current.get(noticeId);
+    if (timeoutId !== undefined) {
+      window.clearTimeout(timeoutId);
+      uploadNoticeTimeoutsRef.current.delete(noticeId);
+    }
+  }
+
+  function scheduleUploadNoticeRemoval(noticeId: string, delayMs = 4000) {
+    clearUploadNoticeTimeout(noticeId);
+    const timeoutId = window.setTimeout(() => {
+      setUploadNotices((current) => current.filter((notice) => notice.id !== noticeId));
+      uploadNoticeTimeoutsRef.current.delete(noticeId);
+    }, delayMs);
+    uploadNoticeTimeoutsRef.current.set(noticeId, timeoutId);
+  }
+
+  function resetSelectedFiles() {
+    setSelectedFiles([]);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   }
 
-  function selectFile(file: File | null) {
-    setSelectedFile(file);
+  function queueSelectedFile(file: File | null) {
+    if (!file) {
+      return;
+    }
+
+    setSelectedFiles((current) => [...current, file]);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }
+
+  function addUploadNotice(file: File) {
+    const id =
+      typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random()}`;
+
+    setUploadNotices((current) => [
+      {
+        id,
+        fileName: file.name,
+        progress: 0,
+        status: "uploading",
+        message: "Uploading 0%",
+      },
+      ...current,
+    ]);
+
+    return id;
+  }
+
+  function updateUploadNotice(noticeId: string, notice: Partial<UploadNotice>) {
+    clearUploadNoticeTimeout(noticeId);
+    setUploadNotices((current) =>
+      current.map((entry) =>
+        entry.id === noticeId ? { ...entry, ...notice } : entry,
+      ),
+    );
+  }
+
+  function parseUploadResponse(xhr: XMLHttpRequest) {
+    if (xhr.response && typeof xhr.response === "object") {
+      return xhr.response as { upload?: UploadedFile; error?: string };
+    }
+
+    if (!xhr.responseText) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(xhr.responseText) as { upload?: UploadedFile; error?: string };
+    } catch {
+      return null;
+    }
   }
 
   function getAbsoluteUrl(pathname: string) {
@@ -323,7 +398,12 @@ export default function LinksAdminPage() {
     setLinks([]);
     setUploads([]);
     cancelEdit();
-    resetSelectedFile();
+    resetSelectedFiles();
+    for (const timeoutId of uploadNoticeTimeoutsRef.current.values()) {
+      window.clearTimeout(timeoutId);
+    }
+    uploadNoticeTimeoutsRef.current.clear();
+    setUploadNotices([]);
   }
 
   async function handleCreate(event: FormEvent<HTMLFormElement>) {
@@ -419,34 +499,103 @@ export default function LinksAdminPage() {
   async function handleUpload(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!selectedFile) {
+    if (selectedFiles.length === 0) {
       toast.error("Choose a file to upload.");
       return;
     }
 
-    await withLoading(setUploadLoading, async () => {
-      const formData = new FormData();
-      formData.set("file", selectedFile);
+    const filesToUpload = [...selectedFiles];
+    resetSelectedFiles();
+    setUploadLoading(true);
 
-      const response = await fetch("/links/api/uploads", {
-        method: "POST",
-        body: formData,
-      });
+    try {
+      const results = await Promise.all(
+        filesToUpload.map(
+          (file) =>
+            new Promise<"success" | "error" | "unauthorized">((resolve) => {
+              const noticeId = addUploadNotice(file);
+              const formData = new FormData();
+              formData.set("file", file);
 
-      if (!response.ok) {
-        const data = await readApiError(response);
-        toast.error(data.error ?? "Failed to upload file.");
+              const request = new XMLHttpRequest();
+              request.open("POST", "/links/api/uploads");
+              request.responseType = "json";
+
+              request.upload.addEventListener("progress", (uploadEvent) => {
+                if (!uploadEvent.lengthComputable) {
+                  return;
+                }
+
+                const progress = Math.round((uploadEvent.loaded / uploadEvent.total) * 100);
+                updateUploadNotice(noticeId, {
+                  progress,
+                  status: "uploading",
+                  message: `Uploading ${progress}%`,
+                });
+              });
+
+              request.addEventListener("load", () => {
+                const data = parseUploadResponse(request);
+
+                if (request.status === 401) {
+                  updateUploadNotice(noticeId, {
+                    progress: 100,
+                    status: "error",
+                    message: "Session expired.",
+                  });
+                  scheduleUploadNoticeRemoval(noticeId);
+                  resolve("unauthorized");
+                  return;
+                }
+
+                if (request.status < 200 || request.status >= 300) {
+                  updateUploadNotice(noticeId, {
+                    progress: 100,
+                    status: "error",
+                    message: data?.error ?? `Failed to upload ${file.name}.`,
+                  });
+                  scheduleUploadNoticeRemoval(noticeId);
+                  resolve("error");
+                  return;
+                }
+
+                updateUploadNotice(noticeId, {
+                  progress: 100,
+                  status: "success",
+                  message: "1 file uploaded",
+                });
+                scheduleUploadNoticeRemoval(noticeId);
+                resolve("success");
+              });
+
+              request.addEventListener("error", () => {
+                updateUploadNotice(noticeId, {
+                  progress: 100,
+                  status: "error",
+                  message: `Failed to upload ${file.name}.`,
+                });
+                scheduleUploadNoticeRemoval(noticeId);
+                resolve("error");
+              });
+
+              request.send(formData);
+            }),
+        ),
+      );
+
+      if (results.some((result) => result === "unauthorized")) {
+        setAuthenticated(false);
+        setUploads([]);
+        toast.error("Session expired.");
         return;
       }
 
-      const data = (await response.json()) as { upload?: UploadedFile };
-      const upload = data.upload;
-      resetSelectedFile();
-      toast.success(
-        upload ? `Uploaded ${getAbsoluteUrl(upload.downloadUrl)}` : "Upload complete.",
-      );
-      await loadUploads();
-    });
+      if (results.some((result) => result === "success")) {
+        await loadUploads();
+      }
+    } finally {
+      setUploadLoading(false);
+    }
   }
 
   async function handleDeleteUpload(upload: UploadedFile) {
@@ -454,27 +603,22 @@ export default function LinksAdminPage() {
       return;
     }
 
-    await withLoading(setUploadLoading, async () => {
-      const response = await fetch(
-        `/links/api/uploads/${encodeURIComponent(upload.id)}`,
-        {
-          method: "DELETE",
-        },
-      );
-
-      if (!response.ok) {
-        const data = await readApiError(response);
-        toast.error(data.error ?? "Failed to delete upload.");
-        return;
-      }
-
-      toast.success(`Deleted ${upload.originalName}.`);
-      await loadUploads();
+    const response = await fetch(`/links/api/uploads/${encodeURIComponent(upload.id)}`, {
+      method: "DELETE",
     });
+
+    if (!response.ok) {
+      const data = await readApiError(response);
+      toast.error(data.error ?? "Failed to delete upload.");
+      return;
+    }
+
+    setUploads((current) => current.filter((entry) => entry.id !== upload.id));
+    toast.success(`Deleted ${upload.originalName}.`);
   }
 
   function handleFileInputChange(event: ChangeEvent<HTMLInputElement>) {
-    selectFile(event.target.files?.[0] ?? null);
+    queueSelectedFile(event.target.files?.[0] ?? null);
   }
 
   function handleDragEnter(event: DragEvent<HTMLDivElement>) {
@@ -500,7 +644,7 @@ export default function LinksAdminPage() {
     event.preventDefault();
     event.stopPropagation();
     setIsDragging(false);
-    selectFile(event.dataTransfer.files?.[0] ?? null);
+    queueSelectedFile(event.dataTransfer.files?.[0] ?? null);
   }
 
   if (authenticated === null) {
@@ -551,14 +695,39 @@ export default function LinksAdminPage() {
     );
   }
 
-  const selectedFileKind = selectedFile
-    ? getPreviewKind(selectedFile.type, selectedFile.name)
-    : "none";
-  const selectedFileHasPreview =
-    Boolean(selectedFilePreviewUrl) && selectedFileKind !== "none";
-
   return (
     <main className="min-h-screen bg-[#0a0a0b] text-[#fafafa]">
+      {uploadNotices.length > 0 ? (
+        <aside className="upload-notice-stack" aria-live="polite">
+          {uploadNotices.map((uploadNotice) => (
+            <section key={uploadNotice.id} className="upload-notice">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-[#fafafa]">
+                    {uploadNotice.fileName}
+                  </p>
+                  <p className="mt-1 text-xs text-[#a1a1aa]">{uploadNotice.message}</p>
+                </div>
+                <p className="text-xs text-[#a1a1aa]">{uploadNotice.progress}%</p>
+              </div>
+
+              <div
+                className="upload-progress-track"
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={uploadNotice.progress}
+              >
+                <div
+                  className={`upload-progress-fill upload-progress-fill-${uploadNotice.status}`}
+                  style={{ width: `${Math.max(6, uploadNotice.progress)}%` }}
+                />
+              </div>
+            </section>
+          ))}
+        </aside>
+      ) : null}
+
       <div className="container-resume py-16">
         <div className="mb-10 flex flex-col gap-6 md:grid md:grid-cols-[1fr_auto_1fr] md:items-center">
           <div className="min-w-0">
@@ -600,8 +769,8 @@ export default function LinksAdminPage() {
                 <div>
                   <h2 className="heading-card">Upload File</h2>
                 </div>
-                {selectedFile ? (
-                  <p className="text-caption">Ready to upload</p>
+                {selectedFiles.length > 0 ? (
+                  <p className="text-caption">{selectedFiles.length} queued locally</p>
                 ) : (
                   <p className="text-caption">Choose one file</p>
                 )}
@@ -624,26 +793,22 @@ export default function LinksAdminPage() {
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
                   onClick={() => {
-                    if (!selectedFile && !uploadLoading) {
+                    if (!uploadLoading) {
                       fileInputRef.current?.click();
                     }
                   }}
                   onKeyDown={(event) => {
-                    if (
-                      !selectedFile &&
-                      !uploadLoading &&
-                      (event.key === "Enter" || event.key === " ")
-                    ) {
+                    if (!uploadLoading && (event.key === "Enter" || event.key === " ")) {
                       event.preventDefault();
                       fileInputRef.current?.click();
                     }
                   }}
-                  role={!selectedFile ? "button" : undefined}
-                  tabIndex={!selectedFile ? 0 : -1}
-                  aria-label={!selectedFile ? "Choose a file to upload" : undefined}
-                  className={`dropzone !px-4 ${!selectedFile ? "!py-0 md:min-h-12" : ""} ${isDragging ? "dropzone-active" : ""}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Choose a file to upload"
+                  className={`dropzone !px-4 ${selectedFiles.length === 0 ? "!py-0 md:min-h-12" : ""} ${isDragging ? "dropzone-active" : ""}`}
                 >
-                  {!selectedFile ? (
+                  {selectedFiles.length === 0 ? (
                     <div className="flex flex-col gap-2 py-2 md:min-h-12 md:flex-row md:items-center md:py-0">
                       <p className="m-0 text-body-sm leading-none">
                         <span className="font-medium text-[#fafafa]">
@@ -653,65 +818,43 @@ export default function LinksAdminPage() {
                       </p>
                     </div>
                   ) : (
-                    <div
-                      className={`grid gap-4 ${
-                        selectedFileHasPreview
-                          ? "lg:grid-cols-[minmax(0,180px)_1fr]"
-                          : "lg:grid-cols-1"
-                      }`}
-                    >
-                      {selectedFileHasPreview ? (
-                        <PreviewPane
-                          src={selectedFilePreviewUrl}
-                          kind={selectedFileKind}
-                          title={selectedFile.name}
-                        />
-                      ) : null}
-
-                      <div className="flex min-w-0 flex-col justify-between gap-4">
-                        <div>
-                          <p className="truncate font-medium text-[#fafafa]">
-                            {selectedFile.name}
-                          </p>
+                    <div className="space-y-3">
+                      {selectedFiles.map((file, index) => (
+                        <div
+                          key={`${file.name}-${file.size}-${file.lastModified}-${index}`}
+                          className="min-w-0 border-b border-[#232329] pb-3 last:border-b-0 last:pb-0"
+                        >
+                          <p className="truncate font-medium text-[#fafafa]">{file.name}</p>
                           <p className="text-body-sm mt-1.5">
-                            {`${formatBytes(selectedFile.size)}${
-                              selectedFile.type ? ` • ${selectedFile.type}` : ""
-                            }`}
+                            {`${formatBytes(file.size)}${file.type ? ` • ${file.type}` : ""}`}
                           </p>
                         </div>
-
-                        <div>
-                          <button
-                            type="button"
-                            className="btn-secondary justify-center"
-                            onClick={() => fileInputRef.current?.click()}
-                            disabled={uploadLoading}
-                          >
-                            Change File
-                          </button>
-                        </div>
-                      </div>
+                      ))}
                     </div>
                   )}
                 </div>
 
                 <div className="flex items-center justify-end gap-2 xl:justify-self-end">
-                  {selectedFile ? (
+                  {selectedFiles.length > 0 ? (
                     <button
                       type="button"
                       className="btn-secondary justify-center"
-                      onClick={resetSelectedFile}
+                      onClick={resetSelectedFiles}
                       disabled={uploadLoading}
                     >
-                      Clear
+                      Clear Queue
                     </button>
                   ) : null}
                   <button
                     type="submit"
                     className="btn-primary justify-center"
-                    disabled={uploadLoading || !selectedFile}
+                    disabled={uploadLoading || selectedFiles.length === 0}
                   >
-                    {uploadLoading ? "Uploading..." : "Upload"}
+                    {uploadLoading
+                      ? "Uploading..."
+                      : selectedFiles.length === 1
+                        ? "Upload File"
+                        : "Upload Files"}
                   </button>
                 </div>
               </form>
