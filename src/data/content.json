@@ -13,9 +13,9 @@
         "title": "Research Assistant",
         "period": "2024 - present",
         "bullets": [
-          "Conducted research on multi-agent reasoning and collaboration with LLMs for abstract reasoning with resource limitations using Pytorch",
-          "Gained hands-on experience in collaborative AI research, integrating theoretical frameworks in distributed cognition and coordination with practical implementations for LLM-based agent systems",
-          "Co-authored and submitted a paper to AI conferences, contributing to experiment design, data analysis, and technical writing"
+          "Researched multi-agent reasoning and collaboration between LLMs for abstract reasoning problems (ARC-AGI). Achieving significant improvements across the benchmark using collaboration architecture and prompts.",
+          "Operated GPU clusters to train and finetune novel model architectures in classification and language models in collaborative machine learning research environments.",
+          "Analyzed data, designed experiments, wrote, and submitted a research paper with a Masters student to multiple AI conferences."
         ]
       },
       {
@@ -23,9 +23,9 @@
         "title": "Software Engineering Intern",
         "period": "2023 - 2025",
         "bullets": [
-          "Gained industry-level software development experience, including maintaining code quality, version control, and deployment best practices",
-          "Developed and deployed two custom Slack bot applications, actively used across the company’s workspace to improve productivity by integrating with Zotero and Jiro workflows",
-          "Created and implemented custom command-line tools in Python to automate routine tasks using the OpenAI API, resulting in a 70% reduction in manual effort while creating pull requests"
+          "Gained industry-level software development experience, including maintaining code quality, version control, and deployment best practices.",
+          "Developed and deployed two custom Slack bot applications, actively used across the company’s workspace to improve productivity by integrating with Zotero and Jiro workflows.",
+          "Build custom command-line tools in Python to automate routine tasks using AI, resulting in a 70% reduction in manual effort while creating pull requests"
         ]
       },
       {
@@ -33,9 +33,9 @@
         "title": "Software Engineering Intern",
         "period": "2025",
         "bullets": [
-          "Gained hands-on experience in the startup ecosystem through workshops and mentorship on product design, fundraising, and market validation",
-          "Interned at Teachshare, a company applying GenAI for education, improving the backend infrastructure and enhancing AI implementation for automated worksheet generation",
-          "Designed and integrated new features into the AI worksheet creation system, increasing customization options and content accuracy for educators"
+          "Improved the backend infrastructure and AI workflow implementation for intelligent worksheet generation.",
+          "Designed and integrated new features into the AI worksheet creation system, increasing customization options and content accuracy for educators.",
+          "Participated in product design, fundraising, and market validation workshops within a startup accelerator environment."
         ]
       },
       {
@@ -43,9 +43,9 @@
         "title": "Private Chess and CS Tutor",
         "period": "2023-2025",
         "bullets": [
-          "Provided 1:1 chess tutoring for 7 different students, focusing on strategy development, gameplay analysis, and tournament preparation",
-          "Tutored 4 students in computer science, covering topics from foundational programming concepts to advanced competitive programming/algorithms techniques",
-          "Designed and taught a group computer science course for 30+ students, incorporating algorithms, coding challenges, and project-based learning to build practical skills"
+          "Taught 30+ students in a group computer science course I designed. Incorporated algorithms, coding challenges, and project-based learning to build practical skills.",
+          "Privately tutored 9 students in chess and ran the chess club at my local library, with 40+ members. Focused on strategy development, gameplay analysis, and tournament preparation.",
+          "Privately tutored 5 students in computer science, covering topics from foundational programming concepts to advanced competitive programming/algorithms techniques."
         ]
       }
     ]

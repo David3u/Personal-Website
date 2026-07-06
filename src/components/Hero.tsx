@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  ArrowDownTrayIcon,
+  BriefcaseIcon,
+  FolderOpenIcon,
+} from "@heroicons/react/24/outline";
 import { siteContent } from "@/data/site-content";
 import ContactLinks from "./ContactLinks";
 import ScrollReveal from "./ScrollReveal";
@@ -72,6 +77,13 @@ export default function Hero() {
     }
   };
 
+  const scrollToProjects = () => {
+    const element = document.getElementById("projects");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="min-h-[100vh] flex items-center">
       <div className="container-resume">
@@ -129,11 +141,18 @@ export default function Hero() {
                   rel="noopener noreferrer"
                   className="btn-primary"
                 >
+                  <ArrowDownTrayIcon className="h-5 w-5" aria-hidden="true" />
                   {resumeButtonText}
                 </a>
 
                 <button onClick={scrollToExperience} className="btn-secondary">
+                  <BriefcaseIcon className="h-5 w-5" aria-hidden="true" />
                   View Experience
+                </button>
+
+                <button onClick={scrollToProjects} className="btn-secondary">
+                  <FolderOpenIcon className="h-5 w-5" aria-hidden="true" />
+                  View Projects
                 </button>
               </div>
 

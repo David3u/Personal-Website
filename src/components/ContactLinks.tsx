@@ -1,4 +1,3 @@
-import { ArrowUpRightIcon } from "@heroicons/react/24/outline";
 import { FaGithub, FaLinkedin } from "react-icons/fa6";
 import { HiOutlineEnvelope } from "react-icons/hi2";
 import type { ContactLink } from "@/data/site-content";
@@ -22,18 +21,17 @@ function getIcon(type: string) {
 
 export default function ContactLinks({ links }: ContactLinksProps) {
   return (
-    <div className="flex flex-col sm:flex-row gap-4">
+    <div className="flex gap-3">
       {links.map((link) => (
         <a
           key={link.href}
           href={link.href}
           target={link.type !== "email" ? "_blank" : undefined}
           rel={link.type !== "email" ? "noopener noreferrer" : undefined}
-          className="btn-secondary group"
+          className="btn-social-icon"
+          aria-label={link.label}
         >
           {getIcon(link.type)}
-          <span>{link.label}</span>
-          <ArrowUpRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
         </a>
       ))}
     </div>

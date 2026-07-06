@@ -196,6 +196,32 @@ body {
     background-color: var(--bg-tertiary);
 }
 
+.btn-social-icon {
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 9999px;
+    color: var(--text-secondary);
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.btn-social-icon:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+}
+
+.btn-social-icon:focus-visible {
+    outline: 2px solid var(--accent-warm);
+    outline-offset: 3px;
+}
+
 .btn-secondary-icon,
 .btn-danger-icon,
 .btn-accent-icon,
