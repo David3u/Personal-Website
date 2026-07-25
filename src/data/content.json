@@ -84,6 +84,14 @@
         "tags": ["Full stack", "OCR", "Custom AI model"],
         "link": "https://gradepic.david3u.com",
         "linkText": "Try it out"
+      },
+      {
+        "title": "pyvoice",
+        "description": "A Python SDK for placing, answering, and managing carrier calls through a phone paired to macOS over Bluetooth HFP.",
+        "image": "/projects/pyvoice.svg",
+        "tags": ["Python", "macOS", "Bluetooth HFP", "SDK"],
+        "link": "https://github.com/David3u/py_voice",
+        "linkText": "View on GitHub"
       }
     ]
   },
