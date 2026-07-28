@@ -54,6 +54,14 @@
     "title": "Featured Projects",
     "items": [
       {
+        "title": "Trace",
+        "description": "An interactive AI learning platform that connects lessons, hands-on labs, quizzes, and a visual agent builder so students can understand how AI systems work by experimenting and building.",
+        "image": "/projects/trace.png",
+        "tags": ["Next.js", "FastAPI", "AI Education", "Agent Workflows"],
+        "link": "https://trace.david3u.com",
+        "linkText": "Explore Trace"
+      },
+      {
         "title": "NYConductor",
         "description": "A multilingual assistant for navigating the New York City transit system using natural language. This website gives an agent access to over 10 different endpoints, allowing it to answer any query about using the MTA.",
         "image": "/projects/nyconductor.png",
