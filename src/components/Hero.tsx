@@ -65,7 +65,7 @@ export default function Hero() {
             <div className="flex flex-col items-start gap-4">
               <div className="flex flex-wrap gap-4">
                 <a
-                  href="/resume.pdf"
+                  href="/david-wu-resume.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-primary"
