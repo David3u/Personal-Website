@@ -6,6 +6,7 @@ import {
   getUploadFilePath,
   openUploadReadStream,
 } from "@/lib/links/uploads";
+import { verifyDownloadAccess } from "@/lib/links/auth";
 
 interface RouteContext {
   params: Promise<{
@@ -32,9 +33,20 @@ function createContentDisposition(filename: string) {
   return `attachment; filename="${fallback}"; filename*=UTF-8''${encoded}`;
 }
 
-export async function GET(_request: Request, context: RouteContext) {
+export async function GET(request: Request, context: RouteContext) {
   try {
     const { id } = await context.params;
+    const url = new URL(request.url);
+    if (
+      !verifyDownloadAccess(
+        id,
+        url.searchParams.get("expires"),
+        url.searchParams.get("signature"),
+      )
+    ) {
+      return new NextResponse("Not found.", { status: 404 });
+    }
+
     const upload = await getUploadById(id);
 
     if (!upload) {
@@ -54,7 +66,9 @@ export async function GET(_request: Request, context: RouteContext) {
       headers: {
         "Content-Type": upload.mimeType || "application/octet-stream",
         "Content-Disposition": createContentDisposition(upload.originalName),
-        "Cache-Control": "no-store",
+        "Cache-Control": "private, no-store, max-age=0",
+        "X-Content-Type-Options": "nosniff",
+        "X-Robots-Tag": "noindex, nofollow, noarchive",
       },
     });
   } catch {

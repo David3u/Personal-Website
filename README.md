@@ -2,6 +2,17 @@
 
 # Hi, I'm David 👋
 
+## 3utunnel
+
+This site includes the `3utunnel` receiver. It starts with the normal app process:
+
+```sh
+npm run dev
+npm start
+```
+
+The receiver defaults to `https://david3u.com`; override `TUNNEL_PUBLIC_BASE_URL` only for another origin. It must run on a persistent Node host with WebSocket support. See [the receiver guide](./tools/3utunnel/README.md) for deployment and CLI usage.
+
 I'm a computer engineering student at **The Cooper Union** interested in building AI-powered applications with real-world impact. 
 
 ---
