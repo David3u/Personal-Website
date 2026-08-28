@@ -1,8 +1,8 @@
 {
   "hero": {
     "name": "David Wu",
-    "title": "Computer Engineering",
-    "subtitle": "College student at The Cooper Union interested in building AI-powered applications with real-world impact. You can contact me at 3udavid@gmail.com",
+    "title": "Electrical Engineering",
+    "subtitle": "Electrical Engineering student at The Cooper Union with hands-on experience in ML research, software engineering, and education technology. I build AI-powered applications for real users, especially at the intersection of AI and education.",
     "resumeButtonText": "Download Resume"
   },
   "experience": {
@@ -11,41 +11,41 @@
       {
         "company": "Distributed Artificial Intelligence Research (DAIR) Lab, Hunter College",
         "title": "Research Assistant",
-        "period": "2024 - present",
+        "period": "Mar 2025 - Feb 2026",
         "bullets": [
-          "Researched multi-agent reasoning and collaboration between LLMs for abstract reasoning problems (ARC-AGI). Achieving significant improvements across the benchmark using collaboration architecture and prompts.",
-          "Operated GPU clusters to train and finetune novel model architectures in classification and language models in collaborative machine learning research environments.",
-          "Analyzed data, designed experiments, wrote, and submitted a research paper with a Masters student to multiple AI conferences."
+          "Researched multi-LLM reasoning and collaboration, improving scores on abstract reasoning tasks (ARC-AGI) by 15% over TRM.",
+          "Operated 8x H100 GPU clusters to train novel NLP and LLM models for more than 100 hours in a collaborative research environment.",
+          "Analyzed data, designed experiments, and wrote and submitted a research paper with a mentor to AI conferences."
         ]
       },
       {
-        "company": "Atommap Cooperation",
+        "company": "Fathom TX",
         "title": "Software Engineering Intern",
-        "period": "2023 - 2025",
+        "period": "Nov 2024 - Apr 2025",
         "bullets": [
-          "Gained industry-level software development experience, including maintaining code quality, version control, and deployment best practices.",
-          "Developed and deployed two custom Slack bot applications, actively used across the company’s workspace to improve productivity by integrating with Zotero and Jiro workflows.",
-          "Build custom command-line tools in Python to automate routine tasks using AI, resulting in a 70% reduction in manual effort while creating pull requests"
+          "Applied production software practices across code quality, version control, and deployment.",
+          "Developed two Slack applications integrated with Zotero and Jira workflows, actively used by more than five people to improve productivity.",
+          "Built custom Python tools that used AI to automate routine pull request tasks, reducing manual effort by 70%."
         ]
       },
       {
-        "company": "TeachShare (via Harvard Undergraduate Ventures TECH Summer Program)",
+        "company": "Teachshare & Harvard Undergraduate Ventures Tech",
         "title": "Software Engineering Intern",
-        "period": "2025",
+        "period": "Jun 2025 - Aug 2025",
         "bullets": [
-          "Improved the backend infrastructure and AI workflow implementation for intelligent worksheet generation.",
-          "Designed and integrated new features into the AI worksheet creation system, increasing customization options and content accuracy for educators.",
-          "Participated in product design, fundraising, and market validation workshops within a startup accelerator environment."
+          "Improved backend worksheet file processing efficiency by 10% and streamlined AI workflows for worksheet generation.",
+          "Designed features for AI worksheet creation that improved diagram customization and accuracy.",
+          "Completed 25 product design, fundraising, and market validation workshops in a Harvard-backed startup bootcamp."
         ]
       },
       {
-        "company": "Freelance",
-        "title": "Private Chess and CS Tutor",
-        "period": "2023-2025",
+        "company": "In-person and remote",
+        "title": "Chess and Computer Science Private Tutor",
+        "period": "Feb 2022 - Sep 2025",
         "bullets": [
-          "Taught 30+ students in a group computer science course I designed. Incorporated algorithms, coding challenges, and project-based learning to build practical skills.",
-          "Privately tutored 9 students in chess and ran the chess club at my local library, with 40+ members. Focused on strategy development, gameplay analysis, and tournament preparation.",
-          "Privately tutored 5 students in computer science, covering topics from foundational programming concepts to advanced competitive programming/algorithms techniques."
+          "Taught more than 30 students in group computer science courses I designed, covering algorithms, coding challenges, and project-based learning.",
+          "Tutored nine chess students and ran a 40-member library chess club focused on strategy, gameplay analysis, and tournament preparation.",
+          "Tutored five computer science students, from foundational programming concepts through advanced data structures and algorithms."
         ]
       }
     ]
@@ -58,12 +58,12 @@
         "description": "An interactive AI learning platform that connects lessons, hands-on labs, quizzes, and a visual agent builder so students can understand how AI systems work by experimenting and building.",
         "image": "/projects/trace.png",
         "tags": ["Next.js", "FastAPI", "AI Education", "Agent Workflows"],
-        "link": "https://trace.david3u.com",
+        "link": "https://trace.school",
         "linkText": "Explore Trace"
       },
       {
         "title": "NYConductor",
-        "description": "A multilingual assistant for navigating the New York City transit system using natural language. This website gives an agent access to over 10 different endpoints, allowing it to answer any query about using the MTA.",
+        "description": "A multilingual NYC transit assistant connected to multiple public transportation APIs. It answers natural-language questions, finds intersecting subway stops, and plans multi-stop routes for riders with different accessibility and language needs.",
         "image": "/projects/nyconductor.png",
         "tags": ["Fullstack", "AI Agent", "MTA API"],
         "link": "https://nyconductor.david3u.com",
@@ -71,7 +71,7 @@
       },
       {
         "title": "Speechly",
-        "description": "AI powered speech analysis tool and coaching for better communication. This is a full SaaS suite of tools for improving speaking: structured AI speech analysis harness, curated resources, rich transcript annotation, personal coach with tools.",
+        "description": "A communication training app that analyzes recorded speech for filler words, stutters, mumbling, pacing, volume, and content, then gives specific feedback. Its AI workflows and model capabilities continue to improve through user testing.",
         "image": "/projects/speechly.png",
         "tags": ["Fullstack", "AI Workflow", "Speech Processing", "SaaS"],
         "link": "https://speechly.david3u.com",
@@ -107,30 +107,42 @@
     "title": "Education & Certifications",
     "education": [
       {
-        "degree": "High School Diploma",
-        "institution": "Hunter College High School",
-        "year": "2026",
-        "link": "https://hunterschools.org"
+        "degree": "Bachelor of Engineering, Electrical Engineering",
+        "institution": "The Cooper Union for the Advancement of Science and Art",
+        "year": "Expected May 2030",
+        "link": "https://cooper.edu"
       },
       {
-        "degree": "Electrical Engineering Undergraduate Degree",
-        "institution": "The Cooper Union for the Advancement of Science and Art",
-        "year": "2026-2030",
-        "link": "https://cooper.edu"
+        "degree": "Dual Enrollment: Multivariable Calculus, Linear Algebra, Intro to Data Science, Bayesian Statistics",
+        "institution": "Hunter College",
+        "year": "Through May 2030",
+        "link": "https://hunter.cuny.edu"
+      },
+      {
+        "degree": "High School Diploma",
+        "institution": "Hunter College High School",
+        "year": "June 2026",
+        "link": "https://hunterschools.org"
       }
     ],
     "certifications": [
       {
-        "name": "HUVTSP-TECH Summer Internship Program",
+        "name": "HUV Tech Summer Internship Program",
         "issuer": "Harvard Undergraduate Ventures",
         "year": "2025",
         "link": "https://tech.seas.harvard.edu/"
       },
       {
-        "name": "USACO Gold (top 7%)",
-        "issuer": "USA's premier competitive programming olympiad",
+        "name": "USACO Gold and non-certified Platinum",
+        "issuer": "USA Computing Olympiad",
         "year": "2024-2025",
         "link": "https://usaco.org"
+      },
+      {
+        "name": "Team First Place",
+        "issuer": "NYC Downtown Math Invitational",
+        "year": "2025",
+        "link": "https://dmi.stuy.edu/"
       }
     ]
   },
