@@ -1,10 +1,11 @@
 import crypto from "node:crypto";
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 
 export const LINKS_SESSION_COOKIE = "links_admin_session";
 const LINKS_ADMIN_ROLE = "links-admin";
 
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
+const DOWNLOAD_LINK_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 const LINKS_SESSION_SECRET_ENV = "LINKS_SESSION_SECRET";
 const LINKS_ADMIN_PASSWORD_ENV = "LINKS_ADMIN_PASSWORD";
 
@@ -46,6 +47,10 @@ function getSessionSecret() {
 
 function sign(value: string, secret: string) {
   return base64Url(crypto.createHmac("sha256", secret).update(value).digest());
+}
+
+function signDownload(id: string, expires: number, secret: string) {
+  return sign(`download:${id}:${expires}`, secret);
 }
 
 function hashSecret(value: string) {
@@ -108,6 +113,42 @@ export function verifySessionToken(token: string): SessionPayload | null {
   } catch {
     return null;
   }
+}
+
+export function createDownloadAccess(id: string, now = Date.now()) {
+  const sessionSecret = getSessionSecret();
+  if (!sessionSecret) {
+    throw new Error("Links admin auth is not configured.");
+  }
+
+  const expires = now + DOWNLOAD_LINK_TTL_MS;
+  return {
+    expires,
+    signature: signDownload(id, expires, sessionSecret),
+  };
+}
+
+export function verifyDownloadAccess(
+  id: string,
+  expiresValue: string | null,
+  signature: string | null,
+  now = Date.now(),
+) {
+  const sessionSecret = getSessionSecret();
+  if (!sessionSecret || !expiresValue || !signature || !/^\d+$/.test(expiresValue)) {
+    return false;
+  }
+
+  const expires = Number(expiresValue);
+  if (!Number.isSafeInteger(expires) || expires <= now) {
+    return false;
+  }
+
+  const expectedSignature = signDownload(id, expires, sessionSecret);
+  return (
+    signature.length === expectedSignature.length &&
+    crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))
+  );
 }
 
 export function getSessionFromRequest(request: NextRequest) {

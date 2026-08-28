@@ -3,6 +3,7 @@ import { createReadStream, createWriteStream, promises as fs } from "node:fs";
 import path from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
+import { createDownloadAccess } from "@/lib/links/auth";
 
 export interface UploadedFileRecord {
   id: string;
@@ -127,7 +128,8 @@ async function withManifestWriteLock<T>(task: () => Promise<T>) {
 }
 
 export function getUploadDownloadPath(id: string) {
-  return `/downloads/${id}`;
+  const { expires, signature } = createDownloadAccess(id);
+  return `/downloads/${id}?expires=${expires}&signature=${signature}`;
 }
 
 export function getUploadFilePath(storedName: string) {

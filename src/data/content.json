@@ -56,7 +56,7 @@
       {
         "title": "Trace",
         "description": "An interactive AI learning platform that connects lessons, hands-on labs, quizzes, and a visual agent builder so students can understand how AI systems work by experimenting and building.",
-        "image": "/projects/trace.png",
+        "image": "/projects/trace.jpg",
         "tags": ["Next.js", "FastAPI", "AI Education", "Agent Workflows"],
         "link": "https://trace.school",
         "linkText": "Explore Trace"
@@ -96,7 +96,7 @@
       {
         "title": "pyvoice",
         "description": "A Python SDK for placing, answering, and managing carrier calls through a phone paired to macOS over Bluetooth HFP.",
-        "image": "/projects/pyvoice.svg",
+        "image": "/projects/pyvoice.png",
         "tags": ["Python", "macOS", "Bluetooth HFP", "SDK"],
         "link": "https://github.com/David3u/py_voice",
         "linkText": "View on GitHub"
