@@ -70,11 +70,11 @@
         "linkText": "Try it out"
       },
       {
-        "title": "Speechly",
+        "title": "Umless",
         "description": "AI powered speech analysis tool and coaching for better communication. This is a full SaaS suite of tools for improving speaking: structured AI speech analysis harness, curated resources, rich transcript annotation, personal coach with tools.",
-        "image": "/projects/speechly.png",
+        "image": "/projects/umless.png",
         "tags": ["Fullstack", "AI Workflow", "Speech Processing", "SaaS"],
-        "link": "https://speechly.david3u.com",
+        "link": "https://umless.david3u.com",
         "linkText": "Try it out"
       },
       {
