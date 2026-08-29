@@ -70,11 +70,11 @@
         "linkText": "Try it out"
       },
       {
-        "title": "Speechly",
+        "title": "Umless",
         "description": "A communication training app that analyzes recorded speech for filler words, stutters, mumbling, pacing, volume, and content, then gives specific feedback. Its AI workflows and model capabilities continue to improve through user testing.",
-        "image": "/projects/speechly.png",
+        "image": "/projects/umless.png",
         "tags": ["Fullstack", "AI Workflow", "Speech Processing", "SaaS"],
-        "link": "https://speechly.david3u.com",
+        "link": "https://umless.david3u.com",
         "linkText": "Try it out"
       },
       {
